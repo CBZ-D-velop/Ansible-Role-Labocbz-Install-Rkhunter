@@ -1,0 +1,7 @@
+---
+rkhunter_create_cron_job: true
+rkhunter_cron_job_weekday: "*"
+rkhunter_cron_job_minute: "6"
+rkhunter_cron_job_hour: "6"
+
+rkhunter_report_email_address: "your.address@domain.tld"

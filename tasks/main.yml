@@ -1,0 +1,43 @@
+---
+- name: "Install packages"
+  ansible.builtin.package:
+    update_cache: yes
+    name:
+      - rkhunter
+
+- name: "Import Rkhunter configuration"
+  ansible.builtin.template:
+    src: "templates/rkhunter.conf.j2"
+    dest: "/etc/rkhunter.conf"
+    owner: "root"
+    group: "root"
+    mode: 0600
+
+- name: "Install others packages"
+  when: rkhunter_create_cron_job
+  ansible.builtin.package:
+    update_cache: yes
+    name:
+      - cron
+      - mailutils
+      - colorized-logs
+      - kbtin
+
+- name: "Send automatics report with cron"
+  when: rkhunter_create_cron_job
+  block:
+    - name: "Check if a cron file exist"
+      register: cron_file
+      ansible.builtin.stat:
+        path: "/etc/cron.d/ansible_rkhunter_and_send_report"
+
+    - name: "Configure automatic reports with cron"
+      when: not cron_file.stat.exists
+      ansible.builtin.cron:
+        name: "ansible - send rkhunter email reports"
+        weekday: "{{ rkhunter_cron_job_weekday }}"
+        minute: "{{ rkhunter_cron_job_minute }}"
+        hour: "{{ rkhunter_cron_job_hour }}"
+        user: "root"
+        job: "rkhunter --update && rkhunter --propupd 2>&1 && sudo rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Lynis reports of $(hostname -f)\" {{ rkhunter_report_email_address }}"
+        cron_file: "ansible_rkhunter_send_reports"
