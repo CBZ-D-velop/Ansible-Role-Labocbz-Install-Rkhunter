@@ -3,7 +3,7 @@
   ansible.builtin.package:
     update_cache: yes
     name:
-      - rkhunter
+      - "rkhunter"
 
 - name: "Import Rkhunter configuration"
   ansible.builtin.template:
@@ -11,20 +11,20 @@
     dest: "/etc/rkhunter.conf"
     owner: "root"
     group: "root"
-    mode: 0600
+    mode: "0600"
 
 - name: "Install others packages"
   when: rkhunter_create_cron_job
   ansible.builtin.package:
     update_cache: yes
     name:
-      - cron
-      - mailutils
-      - colorized-logs
-      - kbtin
+      - "cron"
+      - "mailutils"
+      - "colorized-logs"
+      - "kbtin"
 
 - name: "Send automatics report with cron"
-  when: rkhunter_create_cron_job
+  when: rkhunter_create_cron_job | default(false)
   block:
     - name: "Check if a cron file exist"
       register: cron_file
