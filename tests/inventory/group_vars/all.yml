@@ -1,0 +1,7 @@
+---
+inv_install_rkhunter__create_cron_job: true
+inv_install_rkhunter__cron_job_weekday: "*"
+inv_install_rkhunter__cron_job_minute: "6"
+inv_install_rkhunter__cron_job_hour: "6"
+
+inv_install_rkhunter__report_email_address: "your.address@domain.tld"

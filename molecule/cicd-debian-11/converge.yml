@@ -1,22 +1,16 @@
 ---
 - name: "Converge"
-  hosts: "all"
+  hosts: "cicd-debian-11"
   tasks:
-    # replace these tasks with whatever you find suitable to test
-    - name: "Copy something to test use of synchronize module"
-      ansible.builtin.copy:
-        src: "/etc/hosts"
-        dest: "/tmp/hosts-from-controller"
-        mode: 0700
 
     - name: "Include labocbz.install_rkhunter"
       tags:
         - "labocbz.install_rkhunter"
       vars:
-        rkhunter_create_cron_job: "{{ inv_rkhunter_create_cron_job }}"
-        rkhunter_cron_job_weekday: "{{ inv_rkhunter_create_cron_job }}"
-        rkhunter_cron_job_minute: "{{ inv_rkhunter_cron_job_minute }}"
-        rkhunter_cron_job_hour: "{{ inv_rkhunter_cron_job_hour }}"
-        rkhunter_report_email_address: "{{ inv_rkhunter_create_cron_job }}"
+        install_rkhunter__create_cron_job: "{{ inv_install_rkhunter__create_cron_job }}"
+        install_rkhunter__cron_job_weekday: "{{ inv_install_rkhunter__create_cron_job }}"
+        install_rkhunter__cron_job_minute: "{{ inv_install_rkhunter__cron_job_minute }}"
+        install_rkhunter__cron_job_hour: "{{ inv_install_rkhunter__cron_job_hour }}"
+        install_rkhunter__report_email_address: "{{ inv_install_rkhunter__create_cron_job }}"
       ansible.builtin.include_role:
         name: "labocbz.install_rkhunter"

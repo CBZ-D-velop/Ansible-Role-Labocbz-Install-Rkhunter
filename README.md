@@ -114,12 +114,12 @@ Some vars a required to run this role:
 
 ```YAML
 ---
-rkhunter_create_cron_job: true
-rkhunter_cron_job_weekday: "*"
-rkhunter_cron_job_minute: "6"
-rkhunter_cron_job_hour: "6"
+install_rkhunter__create_cron_job: true
+install_rkhunter__cron_job_weekday: "*"
+install_rkhunter__cron_job_minute: "6"
+install_rkhunter__cron_job_hour: "6"
 
-rkhunter_report_email_address: "your.address@domain.tld"
+install_rkhunter__report_email_address: "your.address@domain.tld"
 
 ```
 
@@ -132,12 +132,12 @@ In order to surchage vars, you have multiples possibilities but for mains cases 
 ```YAML
 # From inventory
 ---
-inv_rkhunter_create_cron_job: true
-inv_rkhunter_cron_job_weekday: "*"
-inv_rkhunter_cron_job_minute: "6"
-inv_rkhunter_cron_job_hour: "6"
+inv_install_rkhunter__create_cron_job: true
+inv_install_rkhunter__cron_job_weekday: "*"
+inv_install_rkhunter__cron_job_minute: "6"
+inv_install_rkhunter__cron_job_hour: "6"
 
-inv_rkhunter_report_email_address: "your.address@domain.tld"
+inv_install_rkhunter__report_email_address: "your.address@domain.tld"
 
 ```
 
@@ -153,15 +153,15 @@ To run this role, you can copy the molecule/default/converge.yml playbook and ad
 
 ```YAML
 - name: "Include labocbz.install_rkhunter"
-    tags:
+  tags:
     - "labocbz.install_rkhunter"
-    vars:
-    rkhunter_create_cron_job: "{{ inv_rkhunter_create_cron_job }}"
-    rkhunter_cron_job_weekday: "{{ inv_rkhunter_create_cron_job }}"
-    rkhunter_cron_job_minute: "{{ inv_rkhunter_cron_job_minute }}"
-    rkhunter_cron_job_hour: "{{ inv_rkhunter_cron_job_hour }}"
-    rkhunter_report_email_address: "{{ inv_rkhunter_create_cron_job }}"
-    ansible.builtin.include_role:
+  vars:
+    install_rkhunter__create_cron_job: "{{ inv_install_rkhunter__create_cron_job }}"
+    install_rkhunter__cron_job_weekday: "{{ inv_install_rkhunter__create_cron_job }}"
+    install_rkhunter__cron_job_minute: "{{ inv_install_rkhunter__cron_job_minute }}"
+    install_rkhunter__cron_job_hour: "{{ inv_install_rkhunter__cron_job_hour }}"
+    install_rkhunter__report_email_address: "{{ inv_install_rkhunter__create_cron_job }}"
+  ansible.builtin.include_role:
     name: "labocbz.install_rkhunter"
 ```
 
@@ -179,6 +179,11 @@ Here you can put your change to keep a trace of your work and decisions.
 * Molecule now use remote Docker image by Lord Robin Crombez
 * Molecule now use custom Docker image in CI/CD by env vars
 * New CICD with needs and optimization
+
+### 2024-02-24: Fix and CI
+
+* Added support for new CI base
+* Edit all vars with __
 
 ## Authors
 
