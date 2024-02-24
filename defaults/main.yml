@@ -1,7 +1,7 @@
 ---
-rkhunter_create_cron_job: true
-rkhunter_cron_job_weekday: "*"
-rkhunter_cron_job_minute: "6"
-rkhunter_cron_job_hour: "6"
+install_rkhunter__create_cron_job: true
+install_rkhunter__cron_job_weekday: "*"
+install_rkhunter__cron_job_minute: "6"
+install_rkhunter__cron_job_hour: "6"
 
-rkhunter_report_email_address: "your.address@domain.tld"
+install_rkhunter__report_email_address: "your.address@domain.tld"

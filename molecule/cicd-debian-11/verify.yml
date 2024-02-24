@@ -2,33 +2,41 @@
 # Don't forget to keep this file updated
 # molecule/<scenario>/verify.yml
 - name: "Verify"
-  hosts: "all"
+  hosts: "cicd-debian-11"
   gather_facts: false
   tasks:
 
     - name: "Check if Rkhunter configuration file exist"
-      register: rkhunter_conf_file
-      failed_when: not rkhunter_conf_file.stat.exists
+      register: install_rkhunter__conf_file
+      failed_when: not install_rkhunter__conf_file.stat.exists
       ansible.builtin.stat:
         path: "/etc/rkhunter.conf"
 
     - name: "Create a local Rkhunter report and check status code"
-      register: rkhunter_create_report_status
-      failed_when: rkhunter_create_report_status.rc != 2 # Because emails are not correctly sended
-      changed_when: rkhunter_create_report_status.rc != 2 # Because emails are not correctly sended
-      ansible.builtin.shell: "set -o pipefail; rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1"
+      register: install_rkhunter__create_report_status
+      failed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+      changed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+      ansible.builtin.shell: |
+        set -o pipefail
+        rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1
+      args:
+          executable: "/bin/bash"
 
     - name: "Verify cron and email behaviors"
-      when: inv_rkhunter_create_cron_job
+      when: inv_install_rkhunter__create_cron_job
       block:
       - name: "Check if a cron file exist"
         register: cron_file
         failed_when: not cron_file.stat.exists
         ansible.builtin.stat:
-          path: "/etc/cron.d/ansible_rkhunter_send_reports"
+          path: "/etc/cron.d/ansible_install_rkhunter__send_reports"
 
       - name: "Create a custom email Rkhunter report and check status code"
-        register: rkhunter_create_report_status
-        failed_when: rkhunter_create_report_status.rc != 2 # Because emails are not correctly sended
-        changed_when: rkhunter_create_report_status.rc != 2 # Because emails are not correctly sended
-        ansible.builtin.shell: "set -o pipefail; rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Rkhunter reports of $(hostname -f)\" {{ inv_rkhunter_report_email_address }}"
+        register: install_rkhunter__create_report_status
+        failed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+        changed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+        ansible.builtin.shell: |
+          set -o pipefail
+          rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Rkhunter reports of $(hostname -f)\" {{ inv_install_rkhunter__report_email_address }}
+        args:
+          executable: "/bin/bash"
