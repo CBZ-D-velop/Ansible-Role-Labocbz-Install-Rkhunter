@@ -14,9 +14,13 @@
 
     - name: "Create a local Rkhunter report and check status code"
       register: install_rkhunter__create_report_status
-      failed_when: install_rkhunter__create_report_status.rc != 2 # Because emails are not correctly sended
-      changed_when: install_rkhunter__create_report_status.rc != 2 # Because emails are not correctly sended
-      ansible.builtin.shell: "set -o pipefail; rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1"
+      failed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+      changed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+      ansible.builtin.shell: |
+        set -o pipefail
+        rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1
+      args:
+        executable: "/usr/bin/bash"
 
     - name: "Verify cron and email behaviors"
       when: inv_install_rkhunter__create_cron_job
@@ -29,6 +33,10 @@
 
       - name: "Create a custom email Rkhunter report and check status code"
         register: install_rkhunter__create_report_status
-        failed_when: install_rkhunter__create_report_status.rc != 0 # Because emails are not correctly sended
-        changed_when: install_rkhunter__create_report_status.rc != 0 # Because emails are not correctly sended
-        ansible.builtin.shell: "set -o pipefail; rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Rkhunter reports of $(hostname -f)\" {{ inv_install_rkhunter__report_email_address }}"
+        failed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+        changed_when: install_rkhunter__create_report_status.rc != 1 # Because emails are not correctly sended
+        ansible.builtin.shell: |
+          set -o pipefail
+          rkhunter --update && rkhunter --propupd 2>&1 && rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Rkhunter reports of $(hostname -f)\" {{ inv_install_rkhunter__report_email_address }}
+        args:
+          executable: "/usr/bin/bash"
