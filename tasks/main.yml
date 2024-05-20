@@ -1,5 +1,9 @@
 ---
 - name: "Install packages"
+  retries: 3
+  delay: 10
+  until: output is success
+  register: output
   ansible.builtin.package:
     update_cache: true
     name:
@@ -15,6 +19,10 @@
 
 - name: "Install others packages"
   when: install_rkhunter__create_cron_job
+  retries: 3
+  delay: 10
+  until: output is success
+  register: output
   ansible.builtin.package:
     update_cache: true
     name:
