@@ -47,5 +47,5 @@
         minute: "{{ install_rkhunter__cron_job_minute }}"
         hour: "{{ install_rkhunter__cron_job_hour }}"
         user: "root"
-        job: "rkhunter --update && rkhunter --propupd 2>&1 && sudo rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Lynis reports of $(hostname -f)\" {{ install_rkhunter__report_email_address }}"
+        job: "rkhunter --update && rkhunter --propupd 2>&1 && sudo rkhunter --checkall --skip-keypress 2>&1 | ansi2html | mail -a 'MIME-Version: 1.0' -a 'Content-Type: text/html; charset=iso-8859-1' -s \"Rkhunter reports of $(hostname -f)\" {{ install_rkhunter__report_email_address }}"
         cron_file: "ansible_install_rkhunter__send_reports"
